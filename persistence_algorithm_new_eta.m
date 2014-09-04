@@ -73,8 +73,8 @@ wind_nameplate = 800; % [MW]
 battery_capacity_range = [0.25, 0.5, 0.75, 1, 2, 5];
 soc_range = 0:0.05:1;
 
-% eta = 0.95; eta_name = 'eta095';
-eta = 0.75; eta_name = 'eta075';
+eta = sqrt(0.95); eta_name = 'eta095';
+% eta = sqrt(0.75); eta_name = 'eta075';
 
 tic;
 for q = 1:length(battery_capacity_range)
@@ -135,6 +135,8 @@ for q = 1:length(battery_capacity_range)
             x_new = x_old - eta*p_batt_dis/battery_capacity;
         end
         x_new = roundn(x_new, -6);
+        x_new = min(x_new,1);
+        x_new = max(x_new,0);
         
         u_sim(m) = u;
         xn_1_sim(m) = x_new;
@@ -171,7 +173,6 @@ for q = 1:length(battery_capacity_range)
 end % loop of q, battery capacity
 
 
-
 %% ================================================================== %%
 figure(1); clf;
 plot(fcst, '-', 'color', [0.75 0.75 0.75]); hold on;
@@ -183,4 +184,10 @@ xlim([0 7*24]+x_offset);
 set(gca, 'fontsize', 8);
 xlabel('Time (hr)');
 ylabel('Wind Scheduling (MW)');
+
+% ==========
+figure(2); clf;
+plot(xn_1_sim, '-', 'color', [0.75 0.75 0.75]); hold on;
+x_offset = 504;
+xlim([0 7*24]+x_offset);
 

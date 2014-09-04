@@ -68,13 +68,15 @@ wind_nameplate = 800; % [MW]
 
 
 %% ================================================================== %%
-battery_sizing = 5;
+bty_size = [0.25 0.5 0.75 1 2 5];
+for bb = 1:length(bty_size)
+battery_sizing = bty_size(bb);
 battery_capacity = wind_nameplate*battery_sizing; % [MWh]
 soc_range = 0:0.01:1;
 
-eta = 1; % battery efficiency
-% eta = 0.95; % battery efficiency
-% eta = 0.75; % battery efficiency
+% eta = 1; % battery efficiency
+% eta = sqrt(0.95); % battery efficiency
+eta = sqrt(0.75); % battery efficiency
 
 % sign convention for battery power
 % discharge: +, charge: -
@@ -302,10 +304,11 @@ discrepancy = sum(u_sim - p_batt + curtailment1_sim - reserve_dispatch1_sim) - s
 discrepancy_pctg = discrepancy/sum(obs)
 
 
-file_name = ['Q', num2str(battery_sizing*100), '_N', num2str(N), '_eta', num2str(eta*100), '_', c4_name]
+file_name = ['Q', num2str(battery_sizing*100), '_N', num2str(N), '_eta', num2str(eta^2*100), '_', c4_name]
 save(file_name, 'm', 'battery_capacity', 'cN', 'c4', 'N', 'eta', ...
                 'xn_1_sim', 'u_sim', 'J_sim', 'reserve_scheduling_sim', 'reserve_dispatch1_sim', 'reserve_dispatch2_sim', 'curtailment1_sim', 'curtailment2_sim');
-
+end
+            
 curtail_pctg = sum(curtailment1_sim)/sum(obs)
 reserve_MWh = sum(reserve_dispatch1_sim)
 
