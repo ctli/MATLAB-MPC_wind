@@ -73,15 +73,13 @@ wind_nameplate = 800; % [MW]
 battery_capacity_range = [0.25, 0.5, 0.75, 1, 2, 5];
 soc_range = 0:0.05:1;
 
-% alpha_range = [0:0.1:1;  %eta=0.75
-%                0:0.1:1]; %eta=0.95
-alpha_range = [0.7:0.05:0.9;%eta=0.75
-               0.8:0.05:1]; %eta=0.95
-% alpha_range = [0.75:0.01:0.85; %eta=0.75
-%                0.85:0.01:0.95];%eta=0.95
-
+% alpha_range = 0:0.1:1;
+% alpha_range = 0.7:0.05:0.9;
+% alpha_range = 0.75:0.01:0.85;
 J1_collection = zeros(2, 6, length(alpha_range));
 J2_collection = zeros(2, 6, length(alpha_range));
+        alpha_range = [0.7:0.05:0.9;
+            0.8:0.05:1];
 
 tic;
 for e = 1:2 % loop for {eta=0.75, eta=0.95}
@@ -263,11 +261,11 @@ legend(num2str(alpha_range'), 4);
 title('J1; eta = 0.95');
 
 subplot(2,1,2);
-score = mean(squeeze(J1_collection(2,:,:)/full_potential));
+score = sum(squeeze(J1_collection(2,:,:)/full_potential));
 plot(alpha_range, score, 'x-');
 set(gca, 'fontsize', 8);
 xlabel('alpha range');
-ylabel('average benefit');
+ylabel('total benefit');
 
 % ==============================
 figure(4); clf;
@@ -281,9 +279,9 @@ legend(num2str(alpha_range'), 4);
 title('J2; eta = 0.95');
 
 subplot(2,1,2);
-score = mean(squeeze(J2_collection(2,:,:)/full_potential));
+score = sum(squeeze(J2_collection(2,:,:)/full_potential));
 plot(alpha_range, score, 'x-');
 set(gca, 'fontsize', 8);
 xlabel('alpha range');
-ylabel('average benefit');
+ylabel('total benefit');
 
