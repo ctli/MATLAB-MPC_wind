@@ -114,7 +114,7 @@ for e = 1:2 % loop for {eta=0.75, eta=0.95}
         p_loss(p_batt_dis<0)  = p_chg_loss(p_batt_dis<0);
         p_loss = abs(p_loss);
         
-        %% ==============================
+        % ==============================
         cost = -c1*u_sim + c2*reserve_scheduling_sim + c3*reserve_dispatch1_sim;
         J1 = sum(cost);
         
@@ -125,14 +125,14 @@ for e = 1:2 % loop for {eta=0.75, eta=0.95}
         J1_table(i) = J1;
         J2_table(i) = J2;
         
-        %% ==============================
+        % ==============================
         sale_table(i) = sum(u_sim);
         reserve_table(i) = sum(reserve_dispatch1_sim);
         curtail_table(i) = sum(curtailment1_sim);
         curtail_pctg_table(i) = sum(curtailment1_sim)/sum(obs);
         batt_loss_table(i) = sum(p_loss);
         
-        %% ==============================
+        % ==============================
         sales = sum(u_sim); % always positive
         curtail = sum(curtailment1_sim); % always positive
         reserve = sum(reserve_dispatch1_sim); % always positive
