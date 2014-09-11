@@ -75,16 +75,16 @@ soc_range = 0:0.05:1;
 
 % alpha_range = [0:0.1:1;  %eta=0.75
 %                0:0.1:1]; %eta=0.95
-alpha_range = [0.7:0.05:0.9;%eta=0.75
-               0.8:0.05:1]; %eta=0.95
-% alpha_range = [0.75:0.01:0.85; %eta=0.75
-%                0.85:0.01:0.95];%eta=0.95
+% alpha_range = [0.7:0.05:0.9;%eta=0.75
+%                0.8:0.05:1]; %eta=0.95
+alpha_range = [0.75:0.01:0.85; %eta=0.75
+               0.9:0.01:1];%eta=0.95
 
 J1_collection = zeros(2, 6, length(alpha_range));
 J2_collection = zeros(2, 6, length(alpha_range));
 
 tic;
-for e = 1:2 % loop for {eta=0.75, eta=0.95}
+for e = 2%1:2 % loop for {eta=0.75, eta=0.95}
 
     if e==1
         eta = sqrt(0.75); c_rate = 0.15; eta_name = 'eta095';
@@ -208,7 +208,7 @@ end % loop of a, alpha
 end % loop of e, battery efficiency
 
 
-save('alpha_text_a', 'alpha_range', 'J1_collection', 'J2_collection');
+save('alpha_text_c', 'alpha_range', 'J1_collection', 'J2_collection');
 
 
 %%
