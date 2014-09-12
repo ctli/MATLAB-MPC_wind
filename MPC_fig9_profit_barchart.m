@@ -176,7 +176,7 @@ text(2.15, J1_collection(2,1)/full_potential, ' \eta=0.95', 'fontsize', 8, 'rota
 
 text(7.3, 0.945, '(BESS is controlled by the Heuristic Algorithm)', 'fontsize', 8, 'horizontalalignment', 'right');
 
-% export_fig MPC_fig9_profit_heuristic -painters
+% export_fig MPC_fig9_profit_heuristic_crate -painters
 
 
 %% ================================================================== %%
@@ -317,7 +317,7 @@ text(2.15, J1_collection(2,1)/full_potential, ' \eta=0.95', 'fontsize', 8, 'rota
 
 text(7.3, 1.05, '(BESS is controlled by MPC)', 'fontsize', 8, 'horizontalalignment', 'right');
 
-% export_fig MPC_fig11_profit_MPC -painters
+% export_fig MPC_fig11_profit_MPC_crate -painters
 
 
 %% ================================================================== %%
@@ -457,5 +457,5 @@ text(2.15, J2_collection(2,1)/full_potential, ' \eta=0.95', 'fontsize', 8, 'rota
 
 text(7.3, 0.95, '(BESS is controlled by the Revised MPC Algorithm)', 'fontsize', 8, 'horizontalalignment', 'right');
 
-% export_fig MPC_fig13_profit_ramp -painters
+% export_fig MPC_fig13_profit_ramp_crate -painters
 
