@@ -38,10 +38,12 @@ total_cost_ConvReserve = sum(-c1*DTE_scheduling + c2*rw_range + c3*rw_dispatched
 temp = obs-DTE_scheduling;
 temp(temp<0) = 0;
 curtail_convReserve = sum(temp);
-curtail_convReserve_pctg = curtail_convReserve/sum(obs);
+% curtail_convReserve_pctg = curtail_convReserve/sum(obs);
 
 
 %% ================================================================== %%
+cd('c_rate');
+
 J1_collection = zeros(2, 6);
 J2_collection = zeros(2, 6);
 curtail_pctg_collection = zeros(2, 6);
@@ -78,9 +80,7 @@ for e = 1:2 % loop for {eta=0.75, eta=0.95}
     for i = 1:length(file_name) % loop for battery_capacity_range
         clear curtailment1_sim reserve_scheduling_sim reserve_dispatch1_sim u_sim
         
-%         cd('profit_mat');
         load(file_name{i});
-%         cd ..
         
         battery_capacity = battery_capacity_range(i);
         
@@ -158,8 +158,6 @@ line([0.5 7.5], [1 1]*1, 'color', [0.9 0.9 0.9]);
 
 h1 = bar(1, total_cost_ConvReserve/full_potential, 0.5, 'facec', [0.3 0.3 0.3], 'edge', 'none'); hold on;
 h2 = bar(2:length(J1_collection)+1, J1_collection'/full_potential, 1, 'group', 'edge', 'none');
-% set(h2(1), 'facec', [255 73 73]/255);
-% set(h2(2), 'facec', [0 163 255]/255);
 set(h2(1), 'facec', [1 0 0]);
 set(h2(2), 'facec', [255 110 110]/255);
 
@@ -182,11 +180,12 @@ text(7.3, 0.945, '(BESS is controlled by the Heuristic Algorithm)', 'fontsize', 
 
 
 %% ================================================================== %%
+% MPC, no ramp rate penalty (c4 = 0)
 J1_collection = zeros(2, 6);
 J2_collection = zeros(2, 6);
 curtail_pctg_collection = zeros(2, 6);
 log_collection = zeros(3, 6, 2);
-cd('preserve');
+
 battery_capacity_range = [0.25 0.5 0.75 1 2 5]*wind_nameplate;
 for e = 1:2 % loop for {eta=0.75, eta=0.95}
     switch e
@@ -218,9 +217,7 @@ for e = 1:2 % loop for {eta=0.75, eta=0.95}
     for i = 1:length(file_name) % loop for battery_capacity_range
         clear curtailment1_sim reserve_scheduling_sim reserve_dispatch1_sim u_sim
         
-%         cd('profit_mat');
         load(file_name{i});
-%         cd ..
 
         battery_capacity = battery_capacity_range(i);
         
@@ -321,24 +318,10 @@ text(2.15, J1_collection(2,1)/full_potential, ' \eta=0.95', 'fontsize', 8, 'rota
 text(7.3, 1.05, '(BESS is controlled by MPC)', 'fontsize', 8, 'horizontalalignment', 'right');
 
 % export_fig MPC_fig11_profit_MPC -painters
-cd ..;
 
 
 %% ================================================================== %%
-load ConvReserve_RampRate
-DTE_scheduling(8756:end) = [];
-rw_range(8756:end) = [];
-rw_dispatched(8756:end) = [];
-
-total_cost_ConvReserve = sum(-c1*DTE_scheduling + c2*rw_range + c3*rw_dispatched + c4*abs(diff([400 DTE_scheduling])));
-temp = obs-DTE_scheduling;
-temp(temp<0) = 0;
-curtail_convReserve = sum(temp);
-curtail_convReserve_pctg = curtail_convReserve/sum(obs);
-
-
-wind_nameplate = 800;
-% ==============================
+% MPC, w/ ramp rate penalty (c4 = 0.55)
 J1_collection = zeros(2, 6);
 J2_collection = zeros(2, 6);
 curtail_pctg_collection = zeros(2, 6);
@@ -346,7 +329,6 @@ log_collection = zeros(3, 6, 2);
 
 c4 = 33/55;
 battery_capacity_range = [0.25 0.5 0.75 1 2 5]*wind_nameplate;
-cd('preserve');
 for e = 1:2
     switch e
         case 1 % persistance
@@ -447,7 +429,6 @@ for e = 1:2
     J2_collection(e,:) = J2_table;
     curtail_pctg_collection(e,:) = curtail_pctg_table;
 end
-cd ..;
 
 figure(3); clf; hold on;
 line([0.5 7.5], [1 1]*0.2, 'color', [0.9 0.9 0.9]);

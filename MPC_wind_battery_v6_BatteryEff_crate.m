@@ -75,8 +75,9 @@ battery_capacity = wind_nameplate*battery_sizing; % [MWh]
 soc_range = 0:0.01:1;
 
 % eta = 1; % battery efficiency
-% eta = sqrt(0.95); c_rate = 0.15; % battery efficiency
-eta = sqrt(0.75); c_rate = 0.15; % battery efficiency
+eta = sqrt(0.95); c_rate = 5; % battery efficiency
+% eta = sqrt(0.75); c_rate = 0.15; % battery efficiency
+
 P_dis_c_rate = battery_capacity*c_rate;
 P_chg_c_rate = -P_dis_c_rate;
 
@@ -109,8 +110,8 @@ c1 = 1;
 c2 = 1.03;
 c3 = 1;
 
-c4 = 0;
-% c4 = 30/55; % 0.5455
+% c4 = 0;
+c4 = 30/55; % 0.5455
 c4_name = ['C4_', num2str(c4*100, '%3.0f')];
 
 cN = 0;

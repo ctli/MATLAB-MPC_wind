@@ -73,54 +73,10 @@ ylim([0.3 0.503]);
 set(gca, 'fontsize', 8);
 xlabel('\alpha', 'pos', [0.4926    1.65   17.3205]);
 ylabel('Averaged Revenue (Normalized)');
-set(gcf, 'unit', 'inch', 'pos', [8.3229    2.1979    3.5000    1.8500]);
+set(gcf, 'unit', 'inch', 'pos', [12.0208    2.1979    3.5000    1.85]);
 set(gca, 'units', 'pixels', 'pos', [49.0144   32.5238  270.9840  134.4762]);
 box off;
 set(gca, 'tickdir', 'out');
 my_gridline('y');
-
-
-%% 0.7:0.05:0.9
-load alpha_text_a;
-
-color_code = rainbow_color(length(alpha_range));
-figure(101); clf;
-subplot(2,1,1);
-hp = plot(1:6, squeeze(J1_collection(eta_index,:,:))/full_potential, 'x-');
-for i = 1:length(alpha_range), set(hp(i), 'color', color_code(i,:)); end
-ylim([0 1]);
-set(gca, 'fontsize', 8);
-xlabel('Battery Capacity');
-legend(num2str(alpha_range(eta_index,:)'), 4);
-title('J1');
-
-subplot(2,1,2);
-score = sum(squeeze(J1_collection(eta_index,:,:)/full_potential));
-plot(alpha_range(eta_index,:), score, 'x-');
-set(gca, 'fontsize', 8);
-xlabel('alpha range');
-ylabel('total benefit');
-
-
-%% fine
-load alpha_text_b;
-
-color_code = rainbow_color(length(alpha_range));
-figure(102); clf;
-subplot(2,1,1);
-hp = plot(1:6, squeeze(J1_collection(eta_index,:,:))/full_potential, 'x-');
-for i = 1:length(alpha_range), set(hp(i), 'color', color_code(i,:)); end
-ylim([0 1]);
-set(gca, 'fontsize', 8);
-xlabel('Battery Capacity');
-legend(num2str(alpha_range(eta_index,:)'), 4);
-title('J1');
-
-subplot(2,1,2);
-score = sum(squeeze(J1_collection(eta_index,:,:)/full_potential));
-plot(alpha_range(eta_index,:), score, 'x-');
-set(gca, 'fontsize', 8);
-xlabel('alpha range');
-ylabel('total benefit');
 
 
