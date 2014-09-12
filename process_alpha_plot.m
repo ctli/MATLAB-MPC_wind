@@ -71,12 +71,13 @@ for i = 1:11
 end;
 ylim([0.3 0.503]);
 set(gca, 'fontsize', 8);
-xlabel('\alpha', 'pos', [0.4926    1.65   17.3205]);
+xlabel('\alpha', 'pos', [0.4926    0.269   17.3205]);
 ylabel('Averaged Revenue (Normalized)');
 set(gcf, 'unit', 'inch', 'pos', [12.0208    2.1979    3.5000    1.85]);
 set(gca, 'units', 'pixels', 'pos', [49.0144   32.5238  270.9840  134.4762]);
 box off;
 set(gca, 'tickdir', 'out');
 my_gridline('y');
+% export_fig alpha_range -painters;
 
 
