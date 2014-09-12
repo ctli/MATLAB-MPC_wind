@@ -186,7 +186,7 @@ J1_collection = zeros(2, 6);
 J2_collection = zeros(2, 6);
 curtail_pctg_collection = zeros(2, 6);
 log_collection = zeros(3, 6, 2);
-
+cd('preserve');
 battery_capacity_range = [0.25 0.5 0.75 1 2 5]*wind_nameplate;
 for e = 1:2 % loop for {eta=0.75, eta=0.95}
     switch e
@@ -321,6 +321,7 @@ text(2.15, J1_collection(2,1)/full_potential, ' \eta=0.95', 'fontsize', 8, 'rota
 text(7.3, 1.05, '(BESS is controlled by MPC)', 'fontsize', 8, 'horizontalalignment', 'right');
 
 % export_fig MPC_fig11_profit_MPC -painters
+cd ..;
 
 
 %% ================================================================== %%
@@ -345,6 +346,7 @@ log_collection = zeros(3, 6, 2);
 
 c4 = 33/55;
 battery_capacity_range = [0.25 0.5 0.75 1 2 5]*wind_nameplate;
+cd('preserve');
 for e = 1:2
     switch e
         case 1 % persistance
@@ -445,6 +447,7 @@ for e = 1:2
     J2_collection(e,:) = J2_table;
     curtail_pctg_collection(e,:) = curtail_pctg_table;
 end
+cd ..;
 
 figure(3); clf; hold on;
 line([0.5 7.5], [1 1]*0.2, 'color', [0.9 0.9 0.9]);
