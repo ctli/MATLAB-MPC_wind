@@ -505,8 +505,10 @@ d2 = 1-green./blue;
 
 figure(4); clf; hold on; box on;
 plot(1, -d1*100, 'x', 'color', [0.3 0.3 0.3]);
-plot(2:7, -d2(:,1)*100, '^-', 'color', [0 0.6 0.6]);
-plot(2:7, -d2(:,2)*100, 'v-', 'color', 'c');
+plot(2:7, -d2(:,1)*100, 'o-', 'color', [0 0.55 0]);
+plot(2:7, -d2(:,2)*100, 's-', 'color', [0 0.85 0]);
+% plot(2:7, -d2(:,1)*100, 'o-', 'color', [0 0.6 0.6]);
+% plot(2:7, -d2(:,2)*100, 's-', 'color', 'c');
 
 set(gcf, 'unit', 'inch', 'pos', [14.2500    2.4896    3.5000    1.8500]);
 set(gca, 'pos', [0.1429    0.1771    0.8065    0.7555]);
@@ -518,7 +520,7 @@ set(gca, 'xtick', 1:7, 'xticklabel', {'Conv.', '200', '400', '600', '800', '1600
 text(1, -35, 'Reserve', 'fontsize', 7, 'horizontalalignment', 'center');
 xlabel('              Battery Capacity (MWh)', 'fontsize', 8, 'pos', [3.9742   -34.5]);
 
-ylabel('Performance Difference (%)', 'fontsize', 8);
+ylabel('Revenue Difference (%)', 'fontsize', 8);
 my_gridline('y');
 
 text(4.5, -16, '\eta=0.87', 'fontsize', 8);
