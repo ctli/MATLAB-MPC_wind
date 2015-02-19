@@ -32,13 +32,13 @@ figure(1); clf;
 hp = plot(bty_size, squeeze(J1_collection(eta_index,:,:))/full_potential, 'x-', 'markersize', 3);
 for i = 1:length(alpha_range), set(hp(i), 'color', color_code(i,:)); end
 ylim([0 1.01]);
-set(gca, 'fontsize', 8);
-xlim([0.1 5.2]);
+set(gca, 'fontsize', 7);
+xlim([0.1 5.1]);
 set(gca, 'xtick', bty_size, 'xticklabel', {'200 ','400 ','600 ','800 ','1600 ','4000 '});
-xlabel('Battery Capacity (MWh)', 'pos', [2.6124   -0.2544   17.3205]);
-ylabel('Revenue (Normalized)');
+xlabel('Battery Capacity (MWh)', 'pos', [2.6124   -0.19   17.3205], 'fontsize', 8);
+ylabel('Revenue (Normalized)', 'fontsize', 8);
 set(gcf, 'unit', 'inch', 'pos', [8.3229    2.1979    3.5000    2.0]);
-set(gca, 'units', 'normalized', 'pos', [0.1429    0.2396    0.8065    0.7187]);
+set(gca, 'units', 'normalized', 'pos', [0.1429    0.2    0.8065    0.75]);
 set(gca, 'tickdir', 'out');
 box off;
 rotateticklabel(gca, 90);
@@ -58,7 +58,6 @@ set(legend,'units','pixels', 'fontsize', 8);
 set(legend, 'pos', [259.8333   51   53.8333   80.8333]);
 set(legend, 'box', 'off');
 
-% set(gcf, 'color', 'w');
 % export_fig alpha -painters;
 
 
