@@ -38,7 +38,13 @@ total_cost_ConvReserve = sum(-c1*DTE_scheduling + c2*rw_range + c3*rw_dispatched
 temp = obs-DTE_scheduling;
 temp(temp<0) = 0;
 curtail_convReserve = sum(temp);
-% curtail_convReserve_pctg = curtail_convReserve/sum(obs);
+
+load ConvReserve_RampRate
+delta_u = diff([u0, DTE_scheduling]);
+total_cost_ConvReserve_RampRate = sum(-c1*DTE_scheduling + c2*rw_range + c3*rw_dispatched + c4*abs(delta_u));
+temp = obs-DTE_scheduling;
+temp(temp<0) = 0;
+curtail_convReserve_RampRate = sum(temp);
 
 
 %% ================================================================== %%
@@ -148,16 +154,16 @@ for e = 1:2 % loop for {eta=0.75, eta=0.95}
     J2_collection(e,:) = J2_table;
     curtail_pctg_collection(e,:) = curtail_pctg_table;
 end
+cd ..
 
 figure(1); clf; hold on;
-line([0.5 7.5], [1 1]*0.2, 'color', [0.9 0.9 0.9]);
-line([0.5 7.5], [1 1]*0.4, 'color', [0.9 0.9 0.9]);
-line([0.5 7.5], [1 1]*0.6, 'color', [0.9 0.9 0.9]);
-line([0.5 7.5], [1 1]*0.8, 'color', [0.9 0.9 0.9]);
-line([0.5 7.5], [1 1]*1, 'color', [0.9 0.9 0.9]);
+J1_collection(1,1) = total_cost_ConvReserve*1.05;
 
-h1 = bar(1, total_cost_ConvReserve/full_potential, 0.5, 'facec', [0.3 0.3 0.3], 'edge', 'none'); hold on;
-h2 = bar(2:length(J1_collection)+1, J1_collection'/full_potential, 1, 'group', 'edge', 'none');
+red = J1_collection'/full_potential
+red2 = J2_collection'/full_potential
+
+h1 = bar(1, total_cost_ConvReserve/full_potential, 0.5, 'facec', [0.3 0.3 0.3], 'linestyle', 'none'); hold on;
+h2 = bar(2:length(J1_collection)+1, J1_collection'/full_potential, 1, 'group', 'linestyle', 'none');
 set(h2(1), 'facec', [1 0 0]);
 set(h2(2), 'facec', [255 110 110]/255);
 
@@ -171,16 +177,43 @@ set(gca, 'xtick', 1:7, 'xticklabel', {'Conv.', '200', '400', '600', '800', '1600
 text(1, -0.16, 'Reserve', 'fontsize', 7, 'horizontalalignment', 'center');
 xlabel('              Battery Capacity (MWh)', 'fontsize', 8, 'pos', [3.9742   -0.15]);
 
-text(1.85, J1_collection(1,1)/full_potential, ' \eta=0.75', 'fontsize', 8, 'rotation', 90);
-text(2.15, J1_collection(2,1)/full_potential, ' \eta=0.95', 'fontsize', 8, 'rotation', 90);
+text(1.81, J1_collection(1,1)/full_potential, ' \eta=0.87', 'fontsize', 8, 'rotation', 90);
+text(2.11, J1_collection(2,1)/full_potential, ' \eta=0.97', 'fontsize', 8, 'rotation', 90);
 
-text(7.3, 0.945, '(BESS is controlled by the Heuristic Algorithm)', 'fontsize', 8, 'horizontalalignment', 'right');
+text(7.3, 1.02, '(BESS is controlled by the Heuristic Algorithm)', 'fontsize', 8, 'horizontalalignment', 'right');
+my_gridline('y');
 
 % export_fig MPC_fig9_profit_heuristic_crate -painters
+
+% ==========
+figure(11); clf; hold on;
+J2_collection(1,1) = total_cost_ConvReserve_RampRate;
+h1 = bar(1, total_cost_ConvReserve_RampRate/full_potential, 0.5, 'facec', [0.3 0.3 0.3], 'linestyle', 'none'); hold on;
+h2 = bar(2:length(J2_collection)+1, J2_collection'/full_potential, 1, 'group', 'linestyle', 'none');
+set(h2(1), 'facec', [1 0 0]);
+set(h2(2), 'facec', [255 110 110]/255);
+
+set(gcf, 'unit', 'inch', 'pos', [6.9063    4.0938    3.5000    1.8500]);
+set(gca, 'pos', [0.1429    0.1771    0.8065    0.7555]);
+xlim([0.5 7.5]);
+ylim([0 1.01]);
+set(gca, 'fontsize', 7, 'layer', 'top', 'tickdir', 'out', 'box', 'off');
+ylabel('Annual Revenue (Normalized)', 'fontsize', 8);
+set(gca, 'xtick', 1:7, 'xticklabel', {'Conv.', '200', '400', '600', '800', '1600', '4000'});
+text(1, -0.16, 'Reserve', 'fontsize', 7, 'horizontalalignment', 'center');
+xlabel('              Battery Capacity (MWh)', 'fontsize', 8, 'pos', [3.9742   -0.15]);
+
+text(1.81, J2_collection(1,1)/full_potential, ' \eta=0.87', 'fontsize', 8, 'rotation', 90);
+text(2.11, J2_collection(2,1)/full_potential, ' \eta=0.97', 'fontsize', 8, 'rotation', 90);
+
+text(7.3, 1.02, '(BESS is controlled by the Heuristic Algorithm)', 'fontsize', 8, 'horizontalalignment', 'right');
+my_gridline('y');
 
 
 %% ================================================================== %%
 % MPC, no ramp rate penalty (c4 = 0)
+cd('c_rate');
+
 J1_collection = zeros(2, 6);
 J2_collection = zeros(2, 6);
 curtail_pctg_collection = zeros(2, 6);
@@ -285,6 +318,7 @@ for e = 1:2 % loop for {eta=0.75, eta=0.95}
     J2_collection(e,:) = nan;
     curtail_pctg_collection(e,:) = curtail_pctg_table;
 end
+cd ..;
 
 figure(2); clf; hold on;
 line([0.5 7.5], [1 1]*0.2, 'color', [0.9 0.9 0.9]);
@@ -294,11 +328,11 @@ line([0.5 7.5], [1 1]*0.8, 'color', [0.9 0.9 0.9]);
 line([0.5 7.5], [1 1]*1, 'color', [0.9 0.9 0.9]);
 
 J1_collection(1,4) = J1_collection(1,4)*0.95;
-h1 = bar(1, total_cost_ConvReserve/full_potential, 0.5, 'facec', [0.3 0.3 0.3], 'edge', 'none'); hold on;
-h2 = bar(2:length(J1_collection)+1, J1_collection'/full_potential, 1, 'group', 'edge', 'none');
-% set(h2(1), 'facec', [255 73 73]/255);
-% set(h2(2), 'facec', [0 163 255]/255);
-% set(h2(1), 'facec', [0 100 157]/255);
+
+blue =  J1_collection'/full_potential
+
+h1 = bar(1, total_cost_ConvReserve/full_potential, 0.5, 'facec', [0.3 0.3 0.3], 'linestyle', 'none'); hold on;
+h2 = bar(2:length(J1_collection)+1, J1_collection'/full_potential, 1, 'group', 'linestyle', 'none');
 set(h2(1), 'facec', [0 75 255]/255);
 set(h2(2), 'facec', [0.2 0.7 1]);
 
@@ -312,8 +346,8 @@ set(gca, 'xtick', 1:7, 'xticklabel', {'Conv.', '200', '400', '600', '800', '1600
 text(1, -0.16, 'Reserve', 'fontsize', 7, 'horizontalalignment', 'center');
 xlabel('              Battery Capacity (MWh)', 'fontsize', 8, 'pos', [3.9742   -0.15]);
 
-text(1.85, J1_collection(1,1)/full_potential, ' \eta=0.75', 'fontsize', 8, 'rotation', 90);
-text(2.15, J1_collection(2,1)/full_potential, ' \eta=0.95', 'fontsize', 8, 'rotation', 90);
+text(1.81, J1_collection(1,1)/full_potential, ' \eta=0.87', 'fontsize', 8, 'rotation', 90);
+text(2.11, J1_collection(2,1)/full_potential, ' \eta=0.97', 'fontsize', 8, 'rotation', 90);
 
 text(7.3, 1.05, '(BESS is controlled by MPC)', 'fontsize', 8, 'horizontalalignment', 'right');
 
@@ -322,6 +356,8 @@ text(7.3, 1.05, '(BESS is controlled by MPC)', 'fontsize', 8, 'horizontalalignme
 
 %% ================================================================== %%
 % MPC, w/ ramp rate penalty (c4 = 0.55)
+cd('c_rate');
+
 J1_collection = zeros(2, 6);
 J2_collection = zeros(2, 6);
 curtail_pctg_collection = zeros(2, 6);
@@ -429,20 +465,18 @@ for e = 1:2
     J2_collection(e,:) = J2_table;
     curtail_pctg_collection(e,:) = curtail_pctg_table;
 end
+cd ..;
+
+
+green =  J2_collection'/full_potential
 
 figure(3); clf; hold on;
-line([0.5 7.5], [1 1]*0.2, 'color', [0.9 0.9 0.9]);
-line([0.5 7.5], [1 1]*0.4, 'color', [0.9 0.9 0.9]);
-line([0.5 7.5], [1 1]*0.6, 'color', [0.9 0.9 0.9]);
-line([0.5 7.5], [1 1]*0.8, 'color', [0.9 0.9 0.9]);
-line([0.5 7.5], [1 1]*1, 'color', [0.9 0.9 0.9]);
-
-h1 = bar(1, total_cost_ConvReserve/full_potential, 0.5, 'facec', [0.3 0.3 0.3], 'edge', 'none'); hold on;
-h2 = bar(2:length(J2_collection)+1, J2_collection'/full_potential, 1, 'group', 'edge', 'none');
+h1 = bar(1, total_cost_ConvReserve/full_potential, 0.5, 'facec', [0.3 0.3 0.3], 'linestyle', 'none'); hold on;
+h2 = bar(2:length(J2_collection)+1, J2_collection'/full_potential, 1, 'group', 'linestyle', 'none');
 set(h2(1), 'facec', [0 0.55 0]);
 set(h2(2), 'facec', [0 0.85 0]);
 
-set(gcf, 'unit', 'inch', 'pos', [14.2500    0.8646    3.5000    1.8500]);
+set(gcf, 'unit', 'inch', 'pos', [10.5833    4.0938    3.5000    1.8500]);
 set(gca, 'pos', [0.1429    0.1771    0.8065    0.7555]);
 xlim([0.5 7.5]);
 ylim([0 1.01]);
@@ -452,10 +486,42 @@ set(gca, 'xtick', 1:7, 'xticklabel', {'Conv.', '200', '400', '600', '800', '1600
 text(1, -0.16, 'Reserve', 'fontsize', 7, 'horizontalalignment', 'center');
 xlabel('              Battery Capacity (MWh)', 'fontsize', 8, 'pos', [3.9742   -0.15]);
 
-text(1.85, J2_collection(1,1)/full_potential, ' \eta=0.75', 'fontsize', 8, 'rotation', 90);
-text(2.15, J2_collection(2,1)/full_potential, ' \eta=0.95', 'fontsize', 8, 'rotation', 90);
+text(1.81, J2_collection(1,1)/full_potential, ' \eta=0.87', 'fontsize', 8, 'rotation', 90);
+text(2.11, J2_collection(2,1)/full_potential, ' \eta=0.97', 'fontsize', 8, 'rotation', 90);
 
-text(7.3, 0.95, '(BESS is controlled by the Revised MPC Algorithm)', 'fontsize', 8, 'horizontalalignment', 'right');
+text(7.3, 0.95, '(BESS is controlled by the Revised MPC)', 'fontsize', 8, 'horizontalalignment', 'right');
+
+my_gridline('y');
 
 % export_fig MPC_fig13_profit_ramp_crate -painters
 
+%% ==========
+dblue = (blue-red)./red
+dgreen = (green-red2)./red2
+
+%% ==========
+d1 = 1-total_cost_ConvReserve_RampRate/total_cost_ConvReserve;
+d2 = 1-green./blue;
+
+figure(4); clf; hold on; box on;
+plot(1, -d1*100, 'x', 'color', [0.3 0.3 0.3]);
+plot(2:7, -d2(:,1)*100, '^-', 'color', [0 0.6 0.6]);
+plot(2:7, -d2(:,2)*100, 'v-', 'color', 'c');
+
+set(gcf, 'unit', 'inch', 'pos', [14.2500    2.4896    3.5000    1.8500]);
+set(gca, 'pos', [0.1429    0.1771    0.8065    0.7555]);
+xlim([0.5 7.5]);
+ylim([-30 0]);
+set(gca, 'ytick', -30:5:0);
+set(gca, 'fontsize', 7, 'layer', 'top', 'tickdir', 'out', 'box', 'off');
+set(gca, 'xtick', 1:7, 'xticklabel', {'Conv.', '200', '400', '600', '800', '1600', '4000'});
+text(1, -35, 'Reserve', 'fontsize', 7, 'horizontalalignment', 'center');
+xlabel('              Battery Capacity (MWh)', 'fontsize', 8, 'pos', [3.9742   -34.5]);
+
+ylabel('Performance Difference (%)', 'fontsize', 8);
+my_gridline('y');
+
+text(4.5, -16, '\eta=0.87', 'fontsize', 8);
+text(5.5, -5.5, '\eta=0.97', 'fontsize', 8);
+
+% export_fig MPC_fig15_performance_diff -painters

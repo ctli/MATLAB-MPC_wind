@@ -68,7 +68,7 @@ wind_nameplate = 800; % [MW]
 
 
 %% ================================================================== %%
-bty_size = [0.25 0.5 0.75 1 2 5];
+bty_size = 0.75;%[0.25 0.5 0.75 1 2 5];
 for bb = 1:length(bty_size)
 battery_sizing = bty_size(bb);
 battery_capacity = wind_nameplate*battery_sizing; % [MWh]
@@ -111,7 +111,8 @@ c2 = 1.03;
 c3 = 1;
 
 % c4 = 0;
-c4 = 30/55; % 0.5455
+c4 = 0.3; % 0.5455
+% c4 = 30/55; % 0.5455
 c4_name = ['C4_', num2str(c4*100, '%3.0f')];
 
 cN = 0;
